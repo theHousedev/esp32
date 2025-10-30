@@ -14,9 +14,8 @@ class Button {
 
   public:
     Button(int pin);
-    void monitor();
+    void monitorButton();
     bool pressed();
-    bool held();
 };
 
 #endif

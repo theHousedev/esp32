@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <Button.h>
+#include "button.h"
 #include "counter.h"
 
 Counter::Counter()
@@ -16,13 +16,16 @@ void Counter::print0b(uint8_t value) {
   
 void Counter::run() {
         if (!paused) {
-          int potValue = analogRead(BUTTON_PIN);
+          int potValue = analogRead(POT_PIN);
           runInterval = map(potValue, 10, 4085, 15, 1000);
   
           if (millis() - lastCountTime >= runInterval) {
             increment();
             lastCountTime = millis();
           }
+        } else {
+          if (reset.pressed()) { reset("[Reset]"); }
+          if (incr.pressed()) { increment("[Increment]"); }
         }
       }
   
@@ -57,4 +60,11 @@ void Counter::increment(String msg) {
   
 uint8_t Counter::getValue() { return value; }
 
-void Counter::togglePause() { paused = !paused; }
+void Counter::togglePause() {
+  paused = !paused;
+  if (paused) {
+    Serial.println("[Counter paused]");
+  } else {
+    Serial.println("[Counter resumed]");
+  }
+}
